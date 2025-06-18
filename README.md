@@ -46,3 +46,7 @@ The data can also be used to easily visualise likely airstrikes and what they im
 
 ![Visualisation of likely Israeli strikes at the Bandar Imam Power Plant](https://github.com/tom-bullock/firms_x_osm/blob/main/bandar-imam-pp.png)
 
+
+## Caveats
+
+FIRMS data can contain observations caused by any type of active fire or thermal anomaly
