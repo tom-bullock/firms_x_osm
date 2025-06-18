@@ -50,8 +50,11 @@ def cluster_points_with_buffer(firms_df, buffer_m= 3000, grid_size_km= 5):
 
 ### function to convert osmnx points to polygons with a 25 m buffer
 
-def buffer_non_polygons(gdf, buffer_distance= 25):
-    # Reproject to a metric CRS (e.g., UTM or Web Mercator) if needed
+def buffer_non_polygons(gdf, buffer_distance=25):
+    # 1) keep a copy of the ORIGINAL geometry in 4326
+    orig_geoms = gdf.to_crs(epsg=4326)['geometry']
+
+    # 2) do your metric reprojection & buffering
     if gdf.crs is None or gdf.crs.to_epsg() != 3857:
         gdf = gdf.to_crs(epsg=3857)
 
@@ -63,13 +66,14 @@ def buffer_non_polygons(gdf, buffer_distance= 25):
         elif isinstance(geom, (Polygon, MultiPolygon)):
             return geom
         else:
-            return None  # Skip or log unusual geometry types
+            return None
 
     gdf = gdf.copy()
-    gdf['geometry_back_up'] = gdf['geometry']
+    # assign the 4326 geometries back into a backup column
+    gdf['geometry_back_up'] = orig_geoms
     gdf['geometry'] = gdf['geometry'].apply(buffer_geom)
 
-    # Return to original CRS if needed
+    # 3) reproject everything—including your backup col—back to 4326
     return gdf.to_crs(epsg=4326)
 
 def query_filter_osmnx(firms_bboxes, firms_df_clusters, tags= tags):
@@ -116,7 +120,7 @@ def query_filter_osmnx(firms_bboxes, firms_df_clusters, tags= tags):
 
         outputs.append(matching_polygons)
     
-    osm_x_firms_df = gpd.GeoDataFrame(pd.concat(outputs, ignore_index= False))
+    osm_x_firms_df = gpd.GeoDataFrame(pd.concat(outputs, ignore_index= False), crs='EPSG:4326')
 
 
     ### reset geometries to originals
