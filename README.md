@@ -49,4 +49,4 @@ The data can also be used to easily visualise likely airstrikes and what they im
 
 ## Caveats
 
-FIRMS data can contain observations caused by any type of active fire or thermal anomaly
+FIRMS data can contain observations caused by any type of active fire or thermal anomaly so the data will show all types events. FIRMS data is also dependent on clear skies and cloud cover. OSM data is also open-source and does not provide total coverage of locations. It is also updated inconsistently.
